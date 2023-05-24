@@ -1,6 +1,13 @@
 import pandas as pd
 
 def RSI(df: pd.DataFrame, window_lenght: int = 14):
+    """Relative Strength Index
+
+    Args:
+        df (pd.DataFrame): Dataframe for one ticker
+        window_lenght (int, optional): Window length. Defaults to 14.
+
+    """
     assert "Close" in df.columns
     delta = df["Close"].diff()
     gain = delta.where(delta > 0, 0)
@@ -13,6 +20,13 @@ def RSI(df: pd.DataFrame, window_lenght: int = 14):
     return rsi
 
 def ADR(df: pd.DataFrame, window_lenght: int = 20):
+    """Advance Decline Ratio
+
+    Args:
+        df (pd.DataFrame): Dataframe having all tickers
+        window_lenght (int, optional): Window length. Defaults to 20.
+
+    """
     assert "Close" in df.columns
     ups = df.groupby("Date")["Change"].apply(lambda x: (x>0).sum())
     downs = df.groupby("Date")["Change"].apply(lambda x: (x<0).sum())
