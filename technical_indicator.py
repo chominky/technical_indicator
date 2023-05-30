@@ -15,7 +15,7 @@ def RSI(df: pd.DataFrame, window_lenght: int = 14):
     avg_gain = gain.rolling(window=window_lenght, min_periods=1).mean()
     avg_loss = loss.rolling(window=window_lenght, min_periods=1).mean()
     rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
+    rsi = 100 * rs / (1+rs)
 
     return rsi
 
@@ -36,3 +36,19 @@ def ADR(df: pd.DataFrame, window_lenght: int = 20):
     adr = (sum_of_ups / sum_of_downs) * 100
 
     return adr
+
+def MACD(df: pd.DataFrame, window_lenght: tuple = (12, 26)):
+    """Moving Average Convergence Divergence
+
+    Args:
+        df (pd.DataFrame): Dataframe for one ticker
+        window_lenght (tuple, optional): Window length. Defaults to 20.
+
+    """
+    ma1 = df["Close"].ewm(span=window_lenght[0]).mean()
+    ma2 = df["Close"].ewm(span=window_lenght[1]).mean()
+    macd = ma1 - ma2 # MACD
+    macds = macd.ewm(span=9).mean() # Signal
+    macdo = macd - macds # Oscillator
+
+    return macdo
